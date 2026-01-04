@@ -5,6 +5,7 @@
 // import { build } from "@reduxjs/toolkit/dist/query/core/buildMiddleware/cacheLifecycle"
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { Post } from 'types/blog.type'
+import { CustomError } from 'utils/helper'
 
 // khai báo toàn bộ logic gọi. Thay vì dùng axios hay fetch thì gom vào file này
 // Reducer path: Tên định danh trong store (blogApi)
@@ -60,10 +61,14 @@ export const blogApi = createApi({
     }),
     addPost: build.mutation<Post, Omit<Post, 'id'>>({
       query(body) {
-        return {
-          url: 'posts',
-          method: 'POST',
-          body
+        try {
+          return {
+            url: 'posts',
+            method: 'POST',
+            body
+          }
+        } catch (error: any) {
+          throw new CustomError(error.message)
         }
       },
       /**
