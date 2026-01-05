@@ -1,6 +1,6 @@
 import { AnyAction, isRejected, isRejectedWithValue, Middleware, MiddlewareAPI } from '@reduxjs/toolkit'
 import { toast } from 'react-toastify'
-import { isEntityError } from 'utils/helper'
+// import { isEntityError } from 'utils/helper'
 
 function isPayloadErrorMessage(payload: unknown): payload is {
   data: {

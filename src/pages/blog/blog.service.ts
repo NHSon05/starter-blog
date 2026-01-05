@@ -4,6 +4,7 @@
 
 // import { build } from "@reduxjs/toolkit/dist/query/core/buildMiddleware/cacheLifecycle"
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+// import { type RootState } from 'store'
 import { Post } from 'types/blog.type'
 import { CustomError } from 'utils/helper'
 
@@ -30,7 +31,17 @@ import { CustomError } from 'utils/helper'
 export const blogApi = createApi({
   reducerPath: 'blogApi', // Tên field trong redux state
   tagTypes: ['Posts'], // Những kiểu tag cho phép dùng trong blogApi
-  baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:4000/' }), //function dựa trên fetchApi
+  keepUnusedDataFor: 10,
+  baseQuery: fetchBaseQuery({
+    baseUrl: 'http://localhost:4000/',
+    prepareHeaders: (headers) => {
+      // const token = (getState() as RootState).auth.token
+      // if (token) {
+      headers.set('authorization', `Bearer Son`)
+      // }
+      return headers
+    }
+  }), //function dựa trên fetchApi
   endpoints: (build) => ({
     // Generic type theo thứ tự là response trả về và argument
     // query: Lấy về và Cache, gắn Tag 'Posts'
@@ -79,7 +90,16 @@ export const blogApi = createApi({
       invalidatesTags: (result, error, body) => [{ type: 'Posts', id: 'LIST' }]
     }),
     getPost: build.query<Post, string>({
-      query: (id) => `posts/${id}`
+      query: (id) => ({
+        url: `posts/${id}`,
+        headers: {
+          hello: 'Son'
+        },
+        params: {
+          first_name: 'son',
+          last_name: 'nguyen'
+        }
+      })
     }),
     updatePost: build.mutation<Post, { id: string; body: Post }>({
       query(data) {
